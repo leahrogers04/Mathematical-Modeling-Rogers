@@ -1,5 +1,6 @@
 //nvcc ballInABox.cu -o bounce -lglut -lm -lGLU -lGL																														
 //To stop hit "control c" in the window you launched it from.
+// This is now on github
 #include <iostream>
 #include <fstream>
 #include <sstream>
