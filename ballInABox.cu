@@ -68,9 +68,9 @@ void setInitailConditions()
 	Position.y = 0.0;
 	Position.z = 0.0;
 	
-	Velocity.x = 50.0;
-	Velocity.y = 50.0;
-	Velocity.z = 50.0;
+	Velocity.x = 60.0;
+	Velocity.y = 60.0;
+	Velocity.z = 60.0;
 	
 	Force.x = 0.0;
 	Force.y = 0.0;
@@ -85,6 +85,8 @@ void setInitailConditions()
 	TotalRunTime = 10000.0;
 	RunTime = 0.0;
 	Dt = 0.001;
+
+	
 }
 
 void drawPicture()
@@ -94,14 +96,14 @@ void drawPicture()
 	
 	float halfSide = BoxSideLength/2.0;
 	
-	glColor3d(1.0, 1.0, 0.0);
+	glColor3d(1.0,0.2823529, 0.6470588);
 	glPushMatrix();
 		glTranslatef(Position.x, Position.y, Position.z);
 		glutSolidSphere(SphereDiameter/2.0, 30, 30);
 	glPopMatrix();
 	
 	glLineWidth(3.0);
-	//Drawing front of box
+	//drawing front of box
 	glColor3d(0.0, 1.0, 0.0);
 	glBegin(GL_LINE_LOOP);
 		glVertex3f(-halfSide, -halfSide, halfSide);
@@ -109,6 +111,7 @@ void drawPicture()
 		glVertex3f(halfSide, halfSide, halfSide);
 		glVertex3f(-halfSide, halfSide, halfSide);
 		glVertex3f(-halfSide, -halfSide, halfSide);
+	glEnd();
 	glEnd();
 	//Drawing back of box
 	glColor3d(1.0, 1.0, 1.0);
@@ -147,34 +150,38 @@ void getForces()
 
     float halfSide = BoxSideLength / 2.0;
     float k = 70000.0;  // Very high spring constant to ensure the ball doesn't escape
+	float radius = SphereDiameter /2.0;
 
-    if(Position.x + SphereDiameter/2.0 > halfSide) 
+// this is a spring force that repells the ball when it gets too close to the wall
+  
+  //
+    if(Position.x + radius > halfSide) //this checks if the balls rightmost point passed the right wall
     {
-        Force.x -= k * (Position.x + SphereDiameter/2.0 - halfSide);
+        Force.x -= k * (Position.x + radius - halfSide); //if its true this applies a force in -x to push it back inside
     } 
-    else if(Position.x - SphereDiameter/2.0 < -halfSide) 
+    else if(Position.x - radius < -halfSide) //this is checking if the balls left most side has passed the left wall
     {
-        Force.x -= k * (Position.x - SphereDiameter/2.0 + halfSide);
+        Force.x -= k * (Position.x - radius + halfSide); //if its true then this applies a force in +x to push it back inside
     }
 
   
-    if(Position.y + SphereDiameter/2.0 > halfSide) 
+    if(Position.y + radius > halfSide) 
     {
-        Force.y -= k * (Position.y + SphereDiameter/2.0 - halfSide);
+        Force.y -= k * (Position.y + radius - halfSide);
     } 
-    else if(Position.y - SphereDiameter/2.0 < -halfSide) 
+    else if(Position.y - radius < -halfSide) 
     {
-        Force.y -= k * (Position.y - SphereDiameter/2.0 + halfSide);
+        Force.y -= k * (Position.y - radius + halfSide);
     }
 
     // Apply force in the z direction
-    if(Position.z + SphereDiameter/2.0 > halfSide) 
+    if(Position.z + radius > halfSide) 
     {
-        Force.z -= k * (Position.z + SphereDiameter/2.0 - halfSide);
+        Force.z -= k * (Position.z + radius - halfSide);
     } 
-    else if(Position.z - SphereDiameter/2.0 < -halfSide) 
+    else if(Position.z - radius < -halfSide) 
     {
-        Force.z -= k * (Position.z - SphereDiameter/2.0 + halfSide);
+        Force.z -= k * (Position.z - radius + halfSide);
     }
 }
 
@@ -202,7 +209,37 @@ void updatePositions()
 	Position.x += Velocity.x*Dt;
 	Position.y += Velocity.y*Dt;
 	Position.z += Velocity.z*Dt;
+
+	 float halfSide = BoxSideLength / 2.0;
+	 float maxVelocity = 60.0f;
+	 float radius = SphereDiameter /2.0;
+
+
+    if(Position.x + radius > halfSide || Position.x - radius < -halfSide)
+    {
+        Velocity.x *= -1;
+        Velocity.x += ((rand() % 21) - 10) * 0.05f;  // Add small random component
+		Velocity.x = (Velocity.x > maxVelocity) ? maxVelocity : (Velocity.x < -maxVelocity) ? -maxVelocity : Velocity.x;
+
+    }
+
+    if(Position.y + radius > halfSide || Position.y - radius < -halfSide)
+    {
+        Velocity.y *= -1;
+        Velocity.y += ((rand() % 21) - 10) * 0.05f;  // Add small random component
+		Velocity.y = (Velocity.y > maxVelocity) ? maxVelocity : (Velocity.y < -maxVelocity) ? -maxVelocity : Velocity.y;
+
+    }
+
+    if(Position.z + radius > halfSide || Position.z - SphereDiameter/2.0 < -halfSide)
+    {
+        Velocity.z *= -1;
+        Velocity.z += ((rand() % 21) - 10) * 0.05f;  // Add small random component
+		Velocity.z = (Velocity.z > maxVelocity) ? maxVelocity : (Velocity.z < -maxVelocity) ? -maxVelocity : Velocity.z;
+
+    }
 }
+
 
 void nBody()
 {	
