@@ -217,15 +217,13 @@ void updatePositions()
 
     if(Position.x + radius > halfSide || Position.x - radius < -halfSide)
     {
-        Velocity.x *= -1;
-        Velocity.x += ((rand() % 21) - 10) * 0.05f;  // Add small random component
-		Velocity.x = (Velocity.x > maxVelocity) ? maxVelocity : (Velocity.x < -maxVelocity) ? -maxVelocity : Velocity.x;
+        Velocity.x += ((rand() % 21) - 10) * 0.05f;  // adding a random component so that the ball doesnt just go from corner to corner
+		Velocity.x = (Velocity.x > maxVelocity) ? maxVelocity : (Velocity.x < -maxVelocity) ? -maxVelocity : Velocity.x; // this makes sure it doesnt go over the max velocity so that it doesnt shoot off into oblivian.
 
     }
 
     if(Position.y + radius > halfSide || Position.y - radius < -halfSide)
     {
-        Velocity.y *= -1;
         Velocity.y += ((rand() % 21) - 10) * 0.05f;  // Add small random component
 		Velocity.y = (Velocity.y > maxVelocity) ? maxVelocity : (Velocity.y < -maxVelocity) ? -maxVelocity : Velocity.y;
 
@@ -233,7 +231,6 @@ void updatePositions()
 
     if(Position.z + radius > halfSide || Position.z - SphereDiameter/2.0 < -halfSide)
     {
-        Velocity.z *= -1;
         Velocity.z += ((rand() % 21) - 10) * 0.05f;  // Add small random component
 		Velocity.z = (Velocity.z > maxVelocity) ? maxVelocity : (Velocity.z < -maxVelocity) ? -maxVelocity : Velocity.z;
 
