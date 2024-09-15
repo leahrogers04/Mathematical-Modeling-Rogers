@@ -1,4 +1,4 @@
-//nvcc AsteriodsLocalDampingBroken.cu -o bounce -lglut -lm -lGLU -lGL																													
+//nvcc HW6AsteriodsLocalDampingBroken.cu -o bounce -lglut -lm -lGLU -lGL																													
 //To stop hit "control c" in the window you launched it from.
 #include <iostream>
 #include <fstream>
@@ -312,8 +312,8 @@ void getForces()
 		Force[i].z = 0.0;
 	}
 	
-	kSphere = 15000.0;
-	kSphereReduction = 0.5;
+	kSphere = 10000.0;
+	kSphereReduction = 0.6;
 	for(int i = 0; i < NUMBER_OF_BALLS; i++)
 	{	
 		for(int j = 0; j < i; j++)
@@ -358,15 +358,32 @@ void getForces()
 
 				
 
-				magnitude = kSphere*(SphereDiameter - d)*kSphereReduction;
+				magnitude = kSphere*(SphereDiameter - d);
+				if(inOut < 0.0)
 				// Doling out the force in the proper perfortions using unit vectors.
+				{
+				Force[i].x -= magnitude*(dx/d)*kSphereReduction;
+				Force[i].y -= magnitude*(dy/d)*kSphereReduction;
+				Force[i].z -= magnitude*(dz/d)*kSphereReduction;
+		
+				// A force on me causes the opposite force on you. 
+				Force[j].x += magnitude*(dx/d)*kSphereReduction;
+				Force[j].y += magnitude*(dy/d)*kSphereReduction;
+				Force[j].z += magnitude*(dz/d)*kSphereReduction;
+				}
+				else
+				{
 				Force[i].x -= magnitude*(dx/d);
 				Force[i].y -= magnitude*(dy/d);
 				Force[i].z -= magnitude*(dz/d);
+		
 				// A force on me causes the opposite force on you. 
 				Force[j].x += magnitude*(dx/d);
 				Force[j].y += magnitude*(dy/d);
 				Force[j].z += magnitude*(dz/d);
+				}
+
+
 			}
 			
 			// This adds the gravity between asteroids.
