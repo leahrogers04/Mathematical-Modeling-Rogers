@@ -91,8 +91,19 @@ void KeyPressed(unsigned char key, int x, int y)
 		//terminalPrint();
 		// ??????????????????????????????????????????
 		// Zero out center of mass and linear velocity of the system.
-		pos={0.0,0.0,0.0,0.0};
-		vel={0.0,0.0,0.0,0.0};
+		pos=centerOfMass();
+		vel=linearVelocity();
+		for(int i = 0; i < NUMBER_OF_BALLS; i++)
+		{
+			Position[i].x = Position[i].x - pos.x;
+			Position[i].y = Position[i].y - pos.y;
+			Position[i].z = Position[i].z - pos.z;
+
+			Velocity[i].x = Velocity[i].x - vel.x;
+			Velocity[i].y = Velocity[i].y - vel.y;
+			Velocity[i].z = Velocity[i].z - vel.z;
+		}
+		
 		drawPicture();
 		printf("\n The simulation has been zeroed out.\n");
 	}
@@ -109,6 +120,7 @@ void KeyPressed(unsigned char key, int x, int y)
 		
 		printf("\n Center of mass: x = %f, y = %f, z = %f", pos.x, pos.y, pos.z);
 		printf("\n Linear velocity: x = %f, y = %f, z = %f", vel.x, vel.y, vel.z);
+		printf("\n");
 	}
 	
 	// Turns tracers on and off
